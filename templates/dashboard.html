@@ -29,5 +29,10 @@
       <input type="submit"></submit>
     </form>
 
+    <form action="{{ url_for('addArticle') }}" method="POST">
+      <input name="article" type="text" placeholder="Insert article url"></input>
+      <input type="submit"></submit>
+    </form>
+
   </body>
 </html>

@@ -17,6 +17,8 @@ from flask_oauthlib.client import OAuth
 #        MySQL Setup       #
 ############################
 
+import datetime
+
 from flask_mysqldb import MySQL
 
 # read private credentials from text file
@@ -199,6 +201,25 @@ def addFriend():
     cur = mysql.connection.cursor()
     cur.execute((ADD_TO_FRIENDS_LIST % (session['uid'][0], new_friend)))
     cur.execute((ADD_TO_FRIENDS_LIST % (new_friend, session['uid'][0])))
+    mysql.connection.commit()
+
+    return redirect(url_for('dashboard'))
+
+@app.route('/add-article', methods=('GET','POST'))
+def addArticle():
+
+    # Add new user to friends list
+    new_article = request.form['article']
+    post_date = datetime.datetime.now()
+
+    ADD_NEW_ARTICLE = "INSERT INTO articles (url, post_date) VALUES ('%s', '%s')"
+    ADD_TO_USER_BOARD = "INSERT INTO userboards (uid, aid) VALUES ('%s', '%s')"
+
+    cur = mysql.connection.cursor()
+    cur.execute((ADD_NEW_ARTICLE % (new_article, post_date)))
+    aid = cur.lastrowid
+
+    cur.execute((ADD_TO_USER_BOARD % (session['uid'][0], aid)))
     mysql.connection.commit()
 
     return redirect(url_for('dashboard'))
