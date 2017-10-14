@@ -9,38 +9,139 @@
     crossorigin="anonymous"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+    <script src="https://unpkg.com/packery@2/dist/packery.pkgd.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
   <body>
-
-    <h1>{{ name }}'s articles.</h1>
-
-    <ul>
+    <div class="header">
+      <div class="logo-container">
+        <img class="logo" src="../static/images/ReadThisIcon.png" />
+      </div>
+      <div class="friend-search-container"> 
+        <form action="{{ url_for('addFriend') }}" method="POST">
+          <select class="friend-search" name="user" onchange="activateButton()">
+             <option class="bad-choice" disabled selected value="bad"> -- select an option -- </option>
+            {% for user in all_users %}
+              <option value={{ user[0] }}>{{ user[1] }}</option>
+            {% endfor %}
+          </select>
+          <input class="submit-button" type="submit" value="Add Friend"></submit>
+        </form>
+      </div>
+      <div class="board-search-container">
+        <form action="{{ url_for('addBoard') }}" method="POST">
+        <input class="board-search" name="board" type="text" placeholder="Board name"></input>
+        <input class="submit-button" type="submit" value="Add Board"></submit>
+        </form>
+      </div>
+      <div class="logout-button-container">
+        <a class="logout-button" href="/logout">Log Out</a>
+      </div>
+    </div>
+    <div class="body-wrapper"> 
+      <div class="article-wrapper"> 
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+            <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4>
+          </div>
+        </div>
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+          <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4></div>
+        </div>
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+          <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4></div>
+        </div>
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+          <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4></div>
+        </div>
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+            <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4>
+          </div>
+        </div>
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+          <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4></div>
+        </div>
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+          <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4></div>
+        </div>
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+          <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4></div>
+        </div>
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+            <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4>
+          </div>
+        </div>
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+            <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4>
+          </div>
+        </div>
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+          <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4></div>
+        </div>
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+          <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4></div>
+        </div>
+        <div class="article-card"> 
+          <div class="article-card-image"> </div>
+          <div class="article-card-info"> 
+          <h3> Titles Go Here. </h3>
+            <h4>Rating Info Goes Here</h4></div>
+        </div>
+      </div>
       {% for article in all_articles %}
-        <li>{{ article }}</li>
-      {% endfor %}
-    </ul>
+        
 
-    {% for board in subbed_boards %}
+        <!-- {{ article }} -->
+      {% endfor %}
+    </div>
+    <!-- {% for board in subbed_boards %}
       <h3>{{ board[1] }}</h3>
       <ul>
         {% for article in board[2] %}
           <li>{{ article[0] }}</li>
         {% endfor %}
       </ul>
-    {% endfor %}
+    {% endfor %} -->
 
-    <h3>Add Friend</h3>
-    <form action="{{ url_for('addFriend') }}" method="POST">
-      <select name="user">
-        {% for user in all_users %}
-          <option value={{ user[0] }}>{{ user[1] }}</option>
-        {% endfor %}
-      </select>
-      <input type="submit"></submit>
-    </form>
-
-    <h3>Add Article</h3>
-    <form action="{{ url_for('addArticle') }}" method="POST">
+    
+    <form class="add-article" action="{{ url_for('addArticle') }}" method="POST">
+      <label for="article">Add Article</label>
       <input name="article" type="text" placeholder="Insert article url"></input>
       <select name="cat">
         <option value='NULL'>None</option>
@@ -48,17 +149,26 @@
           <option value={{ cat[0] }}>{{ cat[1] }}</option>
         {% endfor %}
       </select>
-      <input type="submit"></submit>
+      <input type="submit" value="submit"></input>
     </form>
 
-    <h3>Add Board</h3>
-    <form action="{{ url_for('addBoard') }}" method="POST">
-      <input name="board" type="text" placeholder="Board name"></input>
-      <input type="submit"></submit>
-    </form>
+    <script>
+      function activateButton() {
+        if (document.getElementsByClassName('friend-search')[0].value == "bad") {
+          console.log("i ran");
+          document.getElementsByClassName('submit-button')[0].disabled = true;
+        } else {
+          console.log("now i ran");
+          document.getElementsByClassName('submit-button')[0].disabled = false;
+        }
+      }
 
-    <h3>Log Out</h3>
-    <a href="/logout"><button>Log Out</button></a>
+      activateButton();
 
+      $('.article-wrapper').packery({ // options
+        itemSelector: '.article-card',
+        gutter: 1
+      });
+    </script>
   </body>
 </html>

@@ -36,10 +36,10 @@ oauth = OAuth(app)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root'
-app.config['MYSQL_DB'] = 'tigerhacks'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'tigerhacks_db'
 app.config['MYSQL_PORT'] = 3306
-app.config['MYSQL_UNIX_SOCKET'] = '//Applications/MAMP/tmp/mysql/mysql.sock'
+app.config['MYSQL_UNIX_SOCKET'] = '?unix_socket=/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock'
 
 mysql = MySQL(app)
 
