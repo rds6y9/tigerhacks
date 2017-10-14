@@ -122,6 +122,8 @@ def authorized():
 @app.route('/dashboard', methods=('GET','POST'))
 def dashboard():
 
+    name = session['display_name']
+
     CHECK_USER_EXISTS = "SELECT id FROM users WHERE graph_id = '%s'"
     INSERT_NEW_USER = ("INSERT INTO users (display_name, graph_id, email) VALUES " +
                        "('%s', '%s', '%s')")
@@ -148,7 +150,34 @@ def dashboard():
 
         session['uid'] = cur.lastrowid
 
-    return render_template('dashboard.html')
+    # Populate board with user's articles
+    SELECT_ARTICLES = ("SELECT url FROM users u, userBoards b, articles a " +
+                            "WHERE u.id = b.uid AND b.aid = a.id AND u.id = '%s'")
+
+    cur.execute((SELECT_ARTICLES % session['uid']))
+
+    all_articles = []
+    for article in cur.fetchall():
+        all_articles.append(article[0])
+
+    # Populate board with friends' articles
+    SELECT_USER_FRIENDS = ("SELECT uid2 FROM users u, friends f WHERE " +
+                           "f.uid1 = u.id AND u.id = '%s'")
+
+    cur.execute((SELECT_USER_FRIENDS % session['uid']))
+
+    user_friends = []
+    for friend in cur.fetchall():
+        user_friends.append(friend[0])
+
+    for friend in user_friends:
+        cur.execute((SELECT_ARTICLES % friend))
+
+        for article in cur.fetchall():
+            all_articles.append(article[0])
+
+    return render_template('dashboard.html', name=name,
+                           all_articles=all_articles)
 
 #########################
 #  END TIGERHACKS API   #

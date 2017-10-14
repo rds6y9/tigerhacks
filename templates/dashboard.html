@@ -5,6 +5,12 @@
     <title>Dashboard</title>
   </head>
   <body>
+    <h1>{{ name }}'s articles.</h1>
 
+    <ul>
+      {% for article in all_articles %}
+        <li>{{ article }}</li>
+      {% endfor %}
+    </ul>
   </body>
 </html>
