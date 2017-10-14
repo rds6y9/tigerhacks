@@ -100,37 +100,55 @@ def authorized():
     session['access_token'] = response['access_token']
     me_response = msgraphapi.get('me')
     me_data = json.loads(json.dumps(me_response.data))
-    username = me_data['displayName']
-    email_address = me_data['userPrincipalName']
-    session['alias'] = username
-    session['userEmailAddress'] = email_address
-    return redirect('main')
 
-@app.route('/main')
-def main():
-    """Handler for main route."""
-    if session['alias']:
-        username = session['alias']
-        email_address = session['userEmailAddress']
-        return "raw sauce"
-    else:
-        return render_template('main.html')
+    # Grab the email
+    email = me_data['mail']
+    session['email'] = email
 
+    # Grab the display name
+    display_name = me_data['displayName']
+    session['display_name'] = display_name
+
+    # Grab the graph_id
+    graph_id = me_data['id']
+    session['graph_id'] = graph_id
+
+    return redirect('dashboard')
 
 #########################
 #     TIGERHACKS API    #
 #########################
 
-@app.route('/test', methods=('GET','POST'))
-def test():
+@app.route('/dashboard', methods=('GET','POST'))
+def dashboard():
+
+    CHECK_USER_EXISTS = "SELECT id FROM users WHERE graph_id = '%s'"
+    INSERT_NEW_USER = ("INSERT INTO users (display_name, graph_id, email) VALUES " +
+                       "('%s', '%s', '%s')")
+
+    # Does the user already exist?
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM test")
-    res = cur.fetchall()
+    cur.execute((CHECK_USER_EXISTS % session['graph_id']))
+    result = cur.fetchall()
 
-    return str(res)
+    # If yes, grab their uid
+    if result:
+        session['uid'] = result[0]
 
+    # If not, insert them into the db, then grab their id
+    else:
+        new_user = (
+            session['display_name'],
+            session['graph_id'],
+            session['email']
+        )
 
+        cur.execute((INSERT_NEW_USER % new_user))
+        mysql.connection.commit()
 
+        session['uid'] = cur.lastrowid
+
+    return render_template('dashboard.html')
 
 #########################
 #  END TIGERHACKS API   #
