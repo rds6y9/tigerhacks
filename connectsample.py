@@ -176,8 +176,32 @@ def dashboard():
         for article in cur.fetchall():
             all_articles.append(article[0])
 
+    # Select all existing users for friends input
+    SELECT_ALL_USERS = "SELECT id,display_name FROM users"
+
+    cur.execute(SELECT_ALL_USERS)
+
+    all_users = []
+    for user in cur.fetchall():
+        all_users.append((user[0], user[1]))
+
     return render_template('dashboard.html', name=name,
-                           all_articles=all_articles)
+                           all_articles=all_articles, all_users=all_users)
+
+@app.route('/add-friend', methods=('GET','POST'))
+def addFriend():
+
+    # Add new user to friends list
+    new_friend = request.form['user']
+
+    ADD_TO_FRIENDS_LIST = "INSERT INTO friends (uid1, uid2) VALUES ('%s', '%s')"
+
+    cur = mysql.connection.cursor()
+    cur.execute((ADD_TO_FRIENDS_LIST % (session['uid'][0], new_friend)))
+    cur.execute((ADD_TO_FRIENDS_LIST % (new_friend, session['uid'][0])))
+    mysql.connection.commit()
+
+    return redirect(url_for('dashboard'))
 
 #########################
 #  END TIGERHACKS API   #
