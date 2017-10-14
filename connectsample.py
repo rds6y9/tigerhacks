@@ -65,7 +65,7 @@ msgraphapi = oauth.remote_app( \
 @app.route('/')
 def index():
     """Handler for home page."""
-    return render_template('connect.html')
+    return render_template('landing.html')
 
 @app.route('/login')
 def login():
@@ -178,6 +178,31 @@ def dashboard():
         for article in cur.fetchall():
             all_articles.append(article[0])
 
+    # Populate template with subbed boards
+    SELECT_SUBBED_BOARDS = ("SELECT c.id, c.name FROM subscriptions s, users u, catboards c WHERE " +
+                            "c.id = s.bid AND s.uid = u.id AND u.id = '%s'")
+    SELECT_SUBBED_ARTICLES = ("SELECT a.url FROM articles a, catarticles ca WHERE " +
+                              "a.id = ca.aid AND ca.bid = '%s'")
+
+    cur.execute((SELECT_SUBBED_BOARDS % session['uid']))
+
+    subbed_boards = []
+    for board in cur.fetchall():
+        subbed_boards.append(board)
+
+    for index,board in enumerate(subbed_boards):
+        subbed_articles = []
+
+        cur.execute(SELECT_SUBBED_ARTICLES % str(board[0]))
+
+        for article in cur.fetchall():
+            subbed_articles.append(article)
+
+        subbed_boards[index] = subbed_boards[index] + (subbed_articles,)
+
+    print(subbed_boards)
+
+
     # Select all existing users for friends input
     SELECT_ALL_USERS = "SELECT id,display_name FROM users"
 
@@ -187,8 +212,19 @@ def dashboard():
     for user in cur.fetchall():
         all_users.append((user[0], user[1]))
 
+    # Select all created categories
+    SELECT_SUBBED_CATS = ("SELECT c.id, c.name FROM catboards c, users u WHERE " +
+                          "u.id = c.uid AND u.id = '%s'")
+
+    cur.execute(SELECT_SUBBED_CATS % session['uid'][0])
+
+    subbed_cats = []
+    for cat in cur.fetchall():
+        subbed_cats.append((cat[0], cat[1]))
+
     return render_template('dashboard.html', name=name,
-                           all_articles=all_articles, all_users=all_users)
+                           all_articles=all_articles, all_users=all_users,
+                           subbed_cats=subbed_cats, subbed_boards=subbed_boards)
 
 @app.route('/add-friend', methods=('GET','POST'))
 def addFriend():
@@ -211,15 +247,44 @@ def addArticle():
     # Add new user to friends list
     new_article = request.form['article']
     post_date = datetime.datetime.now()
+    cat_tag = request.form['cat']
 
-    ADD_NEW_ARTICLE = "INSERT INTO articles (url, post_date) VALUES ('%s', '%s')"
+    ADD_NEW_ARTICLE = "INSERT INTO articles (url, post_date, tag) VALUES ('%s', '%s', '%s')"
     ADD_TO_USER_BOARD = "INSERT INTO userboards (uid, aid) VALUES ('%s', '%s')"
+    ADD_TO_CAT_BOARD = "INSERT INTO catarticles (bid, aid) VALUES ('%s', '%s')"
+
 
     cur = mysql.connection.cursor()
-    cur.execute((ADD_NEW_ARTICLE % (new_article, post_date)))
+    cur.execute((ADD_NEW_ARTICLE % (new_article, post_date, cat_tag)))
     aid = cur.lastrowid
 
+    # If an article is tagged, add to catarticles
+    if cat_tag != 'NULL':
+        cur.execute((ADD_TO_CAT_BOARD % (cat_tag, aid)))
+
+    # Add article to user board always
     cur.execute((ADD_TO_USER_BOARD % (session['uid'][0], aid)))
+    mysql.connection.commit()
+
+    return redirect(url_for('dashboard'))
+
+@app.route('/add-board', methods=('GET','POST'))
+def addBoard():
+
+    # Add a new category board
+    new_board = request.form['board']
+
+    ADD_NEW_BOARD = "INSERT INTO catboards (name, uid) VALUES ('%s', '%s')"
+
+    cur = mysql.connection.cursor()
+    cur.execute((ADD_NEW_BOARD % (new_board,session['uid'][0])))
+    bid = cur.lastrowid
+
+    # Subscribe to new board
+    SUBSCRIBE_TO_BOARD = "INSERT INTO subscriptions (uid, bid) VALUES ('%s','%s')"
+
+    cur.execute((SUBSCRIBE_TO_BOARD % (session['uid'][0],bid)))
+
     mysql.connection.commit()
 
     return redirect(url_for('dashboard'))
