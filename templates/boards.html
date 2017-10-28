@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>ReadThis</title>
+    <title>Boards</title>
     <script
     src="https://code.jquery.com/jquery-3.2.1.min.js"
     integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -40,23 +40,40 @@
       </div>
     </div>
     <div class="body-wrapper">
-      <div class="article-wrapper">
-
-      {% for article in all_articles %}
-
-      <a class="bricker-doer" href="{{ article[0] }}">
-        <div class="article-card">
-          <div class="article-card-image">
-            <img src="{{ article[1] }}" />
-          </div>
-          <div class="article-card-info">
-            <h3> {{ article[2] }} </h3>
-          </div>
-        </div>
+      <a class="board-link" href="board/SandT">
+      <div class="board-card community sandt">
+        <p class="school-id"><b>Missouri S&amp;T</b></p>
+        <img class="school" src="../static/images/sandt.jpg">
+      </div>
       </a>
+      <a class="board-link" href="board/Mizzou">
+      <div class="board-card community mizzou">
+        <p class="school-id"><b>Mizzou</b></p>
+        <img class="school" src="../static/images/mizzou.jpg">
+      </div>
+    </a>
+    <a class="board-link" href="board/UMSL">
+      <div class="board-card community umsl">
+        <p class="school-id"><b>UMSL</b></p>
+        <img class="school" src="../static/images/umsl.jpg">
+      </div>
+    </a>
+    <a class="board-link" href="board/UMKC">
+      <div class="board-card community umkc">
+        <p class="school-id"><b>UMKC</b></p>
+        <img class="school" src="../static/images/umkc.jpg">
+      </div>
+    </a>
 
-      {% endfor %}
-    </div>
+    {% for board in all_subbed_boards %}
+    <a class="board-link" href="#">
+      <div class="board-card community default">
+        <p class="school-id"><b>{{ board }}</b></p>
+        <img class="school" src="../static/images/Newspapers.jpg">
+      </div>
+    </a>
+    {% endfor %}
+  </div>
     <!-- {% for board in subbed_boards %}
       <h3>{{ board[1] }}</h3>
       <ul>
@@ -90,12 +107,10 @@
         }
       }
 
-      
-
       activateButton();
 
       $('.article-wrapper').packery({ // options
-        itemSelector: '.bricker-doer',
+        itemSelector: '.article-card',
         gutter: 1
       });
     </script>

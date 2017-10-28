@@ -1,0 +1,53 @@
+* {
+	font-family: sans-serif;
+}
+
+#RT_Div {
+	width: 100%;
+	height: 100px;
+	background-color: #DDD;
+}
+
+.icon-wrapper {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	float: left;
+	width: 150px;
+	height: 100px;
+}
+
+.icon {
+	width: 70px;
+	height: 70px;
+}
+
+.content-wrapper {
+	width: 600px;
+	height: 100px;
+	margin: 0 auto;
+	text-align: center;
+	line-height: 100px;
+}
+
+.request {
+	float: right;
+}
+
+.login {
+	border: 2px solid #AAA;
+	padding: 8px 12px;
+	font-size: 1.2em;
+	margin-right: 20px;
+	transition: background-color .2s ease-in-out, color .2s ease-in-out;
+}
+
+.login:hover {
+	background-color: darkgrey;
+	color: white;
+}
+
+#postreq {
+	position: absolute;
+	right: 0;
+}

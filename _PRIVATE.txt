@@ -1,5 +1,5 @@
-b11c2a7a-5a79-4279-9991-d0553a6aa8ac
-ccRNnf7kpy6c2e3inCC1mm4
+ee646267-c675-4dd3-a978-5ad4420674fa
+vbKrevii7CxADxTrCYcQq4C
 
 The first two lines of this file should be edited to contain the
 client application ID and client secret, each on a single line with
