@@ -9,7 +9,7 @@ chardet==3.0.4
 click==6.7
 colorama==0.3.7
 configparser==3.5.0
-cryptography==2.1.1
+cryptography==3.2
 docker-py==1.7.2
 dockerpty==0.4.1
 docopt==0.6.2
